@@ -1,0 +1,11 @@
+build/
+.mypy_cache/
+.pytest_cache/
+.nox/
+.tox/
+.git/
+__pycache__/
+htmlcov-*/
+.coverage
+poetry.lock
+*.egg-info/
