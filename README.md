@@ -1,12 +1,24 @@
 # gentimer -- generator based timer
 
 
+## Install
+
+```sh
+pip install gentimer
+```
+
 ## Description
 
-Process generator based timer within event-loop.
+Consume generator based timer within event-loop.
 
 This utility function provide a way to use `time.sleep` like behavior
 inside the event loop.
+
+- `tkinter`
+- `wxPython`
+- `PyQt5`
+- `sched` (standard library)
+
 
 `time.sleep` such function will block thread in Python interpreter.
 
@@ -43,19 +55,19 @@ However, if we are now in an event-loop context,
 
 ``` python
 
-# Bad code: time.sleep will block tkinter's eventloop
+# Bad code: time.sleep inside eventloop
 
 import tkinter
 
 root = tkinter.Tk()
-# This button will not work while blocking by time.sleep
+# This button does not work while blocking by time.sleep
 tkinter.Button(root, text="quit", command=root.quit).pack()
 
 def count_down(num):
     # This function is called inside tkinter event-loop.
     for num in range(num, 0, -1):
         print(num)
-        time.sleep(1) # XXX: blocking
+        time.sleep(1) # XXX: will block event-loop
 
 root.after_idle(count_down, 10)
 root.mainloop()
@@ -76,7 +88,7 @@ tkinter.Button(root, text="quit", command=root.quit).pack()
 def count_down(num):
     if num > 0:
         print(num)
-        # give back control-flow to event-loop.
+        # give back the control-flow to event-loop.
         root.after(1000, count_down, num-1)
 
 root.after_idle(count_down, 10)
@@ -84,7 +96,7 @@ root.mainloop()
 ```
 
 - every iterations check `if num > 0:`
-- every iterations make temporary lambda
+- every iterations make temporary stack-frame.
 - when stop the timer? when code was grown,
   it hard to detect the loop by nested callbacks.
 
