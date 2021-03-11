@@ -1,6 +1,7 @@
 [tool.poetry]
 name = "gentimer"
 version = "0.1.0"
+url = "https://github.com/teamikl/gentimer"
 description = "Utility to make generator to be consumed in event-loop timer"
 authors = ["teamikl"]
 license = "MIT"
