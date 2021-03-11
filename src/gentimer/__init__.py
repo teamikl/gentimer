@@ -1,3 +1,12 @@
+"""GenTimer module
+
+This root module provides
+
+  * version infomation
+  * load sub-module function lazily
+"""
+
+
 __version__ = "0.1.0"
 
 

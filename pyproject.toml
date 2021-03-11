@@ -18,6 +18,7 @@ mypy = "^0.812"
 sphinx = "^3.5.2"
 PyQt5 = "^5.15.3"
 wxPython = "^4.1.1"
+sphinx_rtd_theme = "^0.5.1"
 
 [tool.pytest.ini_options]
 filterwarnings = "ignore::DeprecationWarning:pyreadline.*:"

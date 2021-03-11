@@ -1,5 +1,8 @@
 # gentimer -- generator based timer
 
+
+## Description
+
 Process generator based timer within event-loop.
 
 This utility function provide a way to use `time.sleep` like behavior
@@ -17,11 +20,12 @@ If you want to do something heavy tasks then
 you should use multi-thread or multi-process instead.
 
 
-----
+
 ## Step by step guide
 
 
-```python
+``` python
+
 # basic timer by time.sleep
 
 def count_down(num):
@@ -30,25 +34,28 @@ def count_down(num):
         time.sleep(1)
 
 count_down(10)
+
 ```
 
 This code is simple good. at least, it works well in threaded code.
 However, if we are now in an event-loop context,
 `time.sleep` will stop the current thread, 
 
-```python
+``` python
+
 # Bad code: time.sleep will block tkinter's eventloop
 
 import tkinter
 
 root = tkinter.Tk()
-# XXX: Quit button does not work while blocking by time.sleep
+# This button will not work while blocking by time.sleep
 tkinter.Button(root, text="quit", command=root.quit).pack()
 
 def count_down(num):
+    # This function is called inside tkinter event-loop.
     for num in range(num, 0, -1):
         print(num)
-        time.sleep(1)
+        time.sleep(1) # XXX: blocking
 
 root.after_idle(count_down, 10)
 root.mainloop()
@@ -57,7 +64,8 @@ root.mainloop()
 The most of GUI libraries provides timer feature on the event-loop.
 Here is tkinter example.
 
-```python
+``` python
+
 # nested callback based timer code
 
 import tkinter
@@ -68,6 +76,7 @@ tkinter.Button(root, text="quit", command=root.quit).pack()
 def count_down(num):
     if num > 0:
         print(num)
+        # give back control-flow to event-loop.
         root.after(1000, count_down, num-1)
 
 root.after_idle(count_down, 10)
@@ -80,7 +89,8 @@ root.mainloop()
   it hard to detect the loop by nested callbacks.
 
 
-```python
+``` python
+
 # generator based timer code
 
 import tkinter
@@ -107,7 +117,8 @@ Because, the generator will be consumed inside event-loop timer.
 ## When it's useful? let's think more complex situation
 
 
-```python
+``` python
+
 import tkinter
 
 root = tkinter.Tk()
@@ -126,7 +137,8 @@ root.mainloop()
 
 How to call the pre-post procedure in timer callback?
 
-```python
+``` python
+
 import tkinter
 
 root = tkinter.Tk()
@@ -149,8 +161,13 @@ root.mainloop()
 ```
 
 Cons:
+- redundant double checks every iterations
 - can't reuse local variables
   it's recursive callbacks, each iterations has different stack-frame.
 - can't follow control-flow without understand how `root.after` works.
 
+## Coding Design history
 
+This design concept are used to discussed,
+like "async/await" syntax improved promise based callbacks.
+"yield" can replace recursive timer callback to generator based code.

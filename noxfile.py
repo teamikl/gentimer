@@ -1,17 +1,21 @@
+from typing import Any
 import nox
+from nox.sessions import Session
 
-locations = ["src", "tests", "noxfile.py"]
+locations = ["src", "tests", "noxfile.py", "docs/conf.py"]
 
 
 @nox.session(python="3.8")
-def black(session):
+def black(session: Session) -> None:
+    """Run black code formatter."""
     args = session.posargs or locations
     session.install("black")
     session.run("black", *args)
 
 
 @nox.session(python="3.8")
-def isort(session):
+def isort(session: Session) -> None:
+    """Run isort formatter.""" # TODO: remove
     args = session.posargs or locations
     session.install("isort")
     session.run("isort", *args)
@@ -19,8 +23,9 @@ def isort(session):
 
 # TODO: watch lint?
 @nox.session(python="3.8")
-def lint(session):
-    """
+def lint(session: Session) -> None:
+    """Lint using flake8.
+
     COMMAND
     =======
 
@@ -40,13 +45,13 @@ def lint(session):
 
 
 @nox.session(python=["3.8", "3.7"])
-def tests(session):
-    """
+def tests(session: Session):
+    """Run the test suite.
 
     Commands
     =========
 
-    > nox -r
+    > nox -r tests -- [args]
 
     """
     # add suffix for output htmlcov dir
@@ -61,3 +66,16 @@ def tests(session):
     ]
     session.run("poetry", "install", external=True)
     session.run("pytest", *args)
+
+
+@nox.session(python="3.8")
+def docs(session: Session) -> None:
+    """Build the documentation."""
+    session.run("poetry", "install", external=True)
+    session.install(
+        "sphinx",
+        "sphinx-autodoc-typehints",
+        # "recommonmark",
+        "m2r2",
+    )
+    session.run("sphinx-build", "docs", "docs/_build")
