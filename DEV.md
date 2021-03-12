@@ -16,6 +16,13 @@ poetry run pytest --cov --cov-report html
 
 - https://github.com/github/gitignore/blob/master/Python.gitignore
 
+## Deployment
+
+- poetry build
+- poetry publish -r testpypi
+- poetry publish
+- git tag -s vX.X.X
+
 ## TODO
 
 - [x] nox -r
